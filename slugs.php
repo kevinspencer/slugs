@@ -1,6 +1,7 @@
 <?php
+
 //
-// some of these shamelessly borrowed from the great Merlin Mann
+// some of these slugs shamelessly borrowed from the great Merlin Mann
 //
 // https://gist.github.com/merlinmann/d4c137662eea4b27ed0b0a506c467044
 //
@@ -12,7 +13,7 @@ $slugs = file($slug_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
 if (!$slugs) {
     echo "Error: Could not read slugs file.";
-    exit;
+    exit();
 }
 
 $last_slug = $_SESSION['last_quote'] ?? null;
