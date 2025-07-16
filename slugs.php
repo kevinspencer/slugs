@@ -1,18 +1,30 @@
 <?php
-
 //
-// some of these slugs shamelessly borrowed from the great Merlin Mann
+// some of these shamelessly borrowed from the great Merlin Mann
 //
 // https://gist.github.com/merlinmann/d4c137662eea4b27ed0b0a506c467044
 //
 
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Expires: 0");
+header("Pragma: no-cache");
+
 session_start();
 
 $slug_file = $_SERVER['DOCUMENT_ROOT'] . '/slugs.txt';
-$slugs = file($slug_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$all_slugs = file($slug_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
-if (!$slugs) {
+if (!$all_slugs) {
     echo "Error: Could not read slugs file.";
+    exit();
+}
+
+// because mobile, and some long strings seem like a good idea at the time
+
+$slugs = array_filter($all_slugs, fn($slug) => mb_strlen(trim($slug)) <= 34);
+
+if (empty($slugs)) {
+    echo "No suitable slugs found.";
     exit();
 }
 
@@ -27,3 +39,4 @@ $_SESSION['last_quote'] = $random_slug;
 
 echo $random_slug;
 ?>
+
