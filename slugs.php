@@ -19,7 +19,7 @@ if (!$all_slugs) {
     exit();
 }
 
-// because mobile, and some long strings seem like a good idea at the time
+// because mobile, and some long strings seemed like a good idea at the time
 
 $slugs = array_filter($all_slugs, fn($slug) => mb_strlen(trim($slug)) <= 34);
 
