@@ -6,9 +6,18 @@
 // https://gist.github.com/merlinmann/d4c137662eea4b27ed0b0a506c467044
 //
 
-$slugfile  = $_SERVER['DOCUMENT_ROOT'] . '/slugs.txt';
-$sluglines = file($slugfile);
+session_start();
 
-echo strtolower($sluglines[mt_rand(0,count($sluglines)-1)]);
+$slug_file = $_SERVER['DOCUMENT_ROOT'] . '/slugs.txt';
+$slugs     = file($slug_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$last_slug = $_SESSION['last_quote'] ?? null;
 
+if (count($slugs) > 1 && $last_slug !== null) {
+    $slugs = array_filter($slugs, fn($slug) => $slug !== $last_slug);
+}
+
+$random_slug = $slugs[array_rand($slugs)];
+$_SESSION['last_quote'] = $random_slug;
+
+echo $random_slug;
 ?>
