@@ -15,7 +15,6 @@ $slug_file = $_SERVER['DOCUMENT_ROOT'] . '/slugs.txt';
 $all_slugs = file($slug_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
 if (!$all_slugs) {
-    echo "Error: Could not read slugs file.";
     exit();
 }
 
@@ -24,7 +23,6 @@ if (!$all_slugs) {
 $slugs = array_filter($all_slugs, fn($slug) => mb_strlen(trim($slug)) <= 34);
 
 if (empty($slugs)) {
-    echo "No suitable slugs found.";
     exit();
 }
 
