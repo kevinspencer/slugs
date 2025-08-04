@@ -14,6 +14,12 @@ session_start();
 $slug_file = $_SERVER['DOCUMENT_ROOT'] . '/slugs.txt';
 $all_slugs = file($slug_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
+// let's allow/ignore commented out lines
+$all_slugs = array_filter($all_slugs, function($line) {
+    $line = trim($line);
+    return !(str_starts_with($line, '#') || str_starts_with($line, '//'));
+});
+
 if (!$all_slugs) {
     exit();
 }
