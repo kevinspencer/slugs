@@ -1,9 +1,23 @@
 <?php
+
+//
+// Copyright 2025 Kevin Spencer <kevin@kevinspencer.org>
+// Permission to use, copy, modify, distribute, and sell this software and its
+// documentation for any purpose is hereby granted without fee, provided that
+// the above copyright notice appear in all copies and that both that
+// copyright notice and this permission notice appear in supporting
+// documentation.  No representations are made about the suitability of this
+// software for any purpose.  It is provided "as is" without express or
+// implied warranty.
+//
+
 //
 // some of these shamelessly borrowed from the great Merlin Mann
 //
 // https://gist.github.com/merlinmann/d4c137662eea4b27ed0b0a506c467044
 //
+
+define('APP_VERSION', '0.23');
 
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Expires: 0");
@@ -43,4 +57,3 @@ $_SESSION['last_quote'] = $random_slug;
 
 echo $random_slug;
 ?>
-
