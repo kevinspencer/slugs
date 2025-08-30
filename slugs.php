@@ -17,7 +17,7 @@
 // https://gist.github.com/merlinmann/d4c137662eea4b27ed0b0a506c467044
 //
 
-define('APP_VERSION', '0.23');
+define('APP_VERSION', '0.24');
 
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Expires: 0");
@@ -52,7 +52,7 @@ if (count($slugs) > 1 && $last_slug !== null) {
     $slugs = array_values(array_filter($slugs, fn($slug) => trim($slug) !== trim($last_slug)));
 }
 
-$random_slug = $slugs[array_rand($slugs)];
+$random_slug = $slugs[random_int(0, count($slugs) - 1)];
 $_SESSION['last_quote'] = $random_slug;
 
 echo $random_slug;
