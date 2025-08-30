@@ -11,13 +11,7 @@
 // implied warranty.
 //
 
-//
-// some of these shamelessly borrowed from the great Merlin Mann
-//
-// https://gist.github.com/merlinmann/d4c137662eea4b27ed0b0a506c467044
-//
-
-define('APP_VERSION', '0.24');
+define('APP_VERSION', '0.25');
 
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Expires: 0");
@@ -28,32 +22,38 @@ session_start();
 $slug_file = $_SERVER['DOCUMENT_ROOT'] . '/slugs.txt';
 $all_slugs = file($slug_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
-// let's allow/ignore commented out lines
-$all_slugs = array_filter($all_slugs, function($line) {
+// strip comments + normalize whitespace
+$all_slugs = array_filter($all_slugs, function ($line) {
     $line = trim($line);
-    return !(str_starts_with($line, '#') || str_starts_with($line, '//'));
+    return $line !== '' && !str_starts_with($line, '#') && !str_starts_with($line, '//');
 });
 
 if (!$all_slugs) {
     exit();
 }
 
-// because mobile, and some long strings seemed like a good idea at the time
-
-$slugs = array_filter($all_slugs, fn($slug) => mb_strlen(trim($slug)) <= 34);
+// normalize + filter for mobile-friendly length
+$slugs = array_map('trim', $all_slugs);
+$slugs = array_values(array_unique($slugs)); // drop duplicates
+$slugs = array_filter($slugs, fn($slug) => mb_strlen($slug) <= 34);
 
 if (empty($slugs)) {
     exit();
 }
 
-$last_slug = $_SESSION['last_quote'] ?? null;
-
-if (count($slugs) > 1 && $last_slug !== null) {
-    $slugs = array_values(array_filter($slugs, fn($slug) => trim($slug) !== trim($last_slug)));
+// build or refresh shuffle queue
+if (
+    !isset($_SESSION['slug_queue']) ||
+    empty($_SESSION['slug_queue']) ||
+    array_diff($slugs, $_SESSION['slug_queue']) // new slugs added to file
+) {
+    $_SESSION['slug_queue'] = $slugs;
+    shuffle($_SESSION['slug_queue']);
 }
 
-$random_slug = $slugs[random_int(0, count($slugs) - 1)];
+// take next from queue
+$random_slug = array_shift($_SESSION['slug_queue']);
 $_SESSION['last_quote'] = $random_slug;
 
 echo $random_slug;
-?>
+
