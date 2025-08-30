@@ -1,3 +1,9 @@
+#
+# some of these shamelessly borrowed from the great Merlin Mann
+#
+# https:#gist.github.com/merlinmann/d4c137662eea4b27ed0b0a506c467044
+#
+
 hell of a hot tub you have there
 Into the cauldron, handsome!
 werewolf ear
