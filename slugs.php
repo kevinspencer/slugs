@@ -11,7 +11,8 @@
 // implied warranty.
 //
 
-define('APP_VERSION', '0.27');
+define('APP_VERSION', '0.28');
+define('COOLDOWN_SIZE', 5); // how many recent slugs to avoid repeating
 
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Expires: 0");
@@ -46,12 +47,28 @@ if (!isset($_SESSION['unused_slugs']) || empty($_SESSION['unused_slugs'])) {
     $_SESSION['unused_slugs'] = $slugs;
 }
 
+// initialize recent history if not set
+if (!isset($_SESSION['recent_slugs'])) {
+    $_SESSION['recent_slugs'] = [];
+}
+
 // pick a random slug from the unused pool
-$index = array_rand($_SESSION['unused_slugs']);
-$random_slug = $_SESSION['unused_slugs'][$index];
+do {
+    $index = array_rand($_SESSION['unused_slugs']);
+    $random_slug = $_SESSION['unused_slugs'][$index];
+} while (
+    in_array($random_slug, $_SESSION['recent_slugs'], true) &&
+    count($_SESSION['unused_slugs']) > count($_SESSION['recent_slugs'])
+);
 
 // remove the chosen slug from the pool
 unset($_SESSION['unused_slugs'][$index]);
+
+// update recent history
+$_SESSION['recent_slugs'][] = $random_slug;
+if (count($_SESSION['recent_slugs']) > COOLDOWN_SIZE) {
+    array_shift($_SESSION['recent_slugs']); // keep only last N
+}
 
 // remember last shown (optional, for debugging/logging)
 $_SESSION['last_quote'] = $random_slug;
